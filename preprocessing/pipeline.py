@@ -26,12 +26,33 @@ def extract_hashtags(df, col_name='text'):
     return df
 
 
+def remove_hashtags(df, col_name='text'):
+    """
+    Removes the hashtag symbol from a column.
+
+    :param df: dataframe to remove '#' from.
+    :param col_name: column to remove '#' from.
+    :return: a dataframe without hashtags in the column col_name.
+    """
+    df[col_name] = df[col_name].apply(lambda x: x.replace("#", ""))
+    return df
+
+
 class ItalianTweetsPreprocessingPipeline:
+
     def __init__(self, transformations=None):
+        """
+        Pipeline to preprocess the dataset.
+
+        :param transformations: list of functions contained in the pipeline.
+                                If None the default transformations applied are:
+                                remove_urls, extract_hashtags
+        """
         if transformations is None:
             transformations = [
                 remove_urls,
-                extract_hashtags
+                extract_hashtags,
+                remove_hashtags
             ]
         self.transformations = transformations
 
@@ -43,4 +64,5 @@ class ItalianTweetsPreprocessingPipeline:
         """
         return (df.pipe(self.transformations[0])
                 .pipe(self.transformations[1])
+                .pipe(self.transformations[2])
                 )
