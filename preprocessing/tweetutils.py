@@ -1,3 +1,6 @@
+"""
+This module contains utility functions to process a single tweet in the form of a string.
+"""
 import re
 
 
