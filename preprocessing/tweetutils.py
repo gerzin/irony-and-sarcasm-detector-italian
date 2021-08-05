@@ -4,6 +4,9 @@ This module contains utility functions to process a single tweet in the form of 
 import re
 import emoji
 
+NUMBER_TOKEN = "<NUM>"
+MENTION_TOKEN = "<MEN>"
+
 
 def remove_urls(s: str, sub='', strip=True):
     """
@@ -28,11 +31,12 @@ def find_hashtags(s: str):
     return re.findall(r"#(\w+)", s)
 
 
-def remove_digits(s: str, number_tok="<NUM>"):
+def remove_numbers(s: str, number_tok=NUMBER_TOKEN):
     """
+    Removes the numbers from a string replacing them with a token.
 
-    :param number_tok:
-    :param s:
+    :param s: string to clean.
+    :param number_tok: token to replace the numbers with.
     :return:
     """
     return re.sub(r'[0-9]+', number_tok + " ", s)
@@ -40,20 +44,21 @@ def remove_digits(s: str, number_tok="<NUM>"):
 
 def substitute_emoji(s: str):
     """
+    Substitutes the emojis in a string with a string indicating their meaning.
 
-    :param s:
-    :return:
+    :param s: string to clean.
+    :return: a string in which the emojis are replaced with a string.
     """
     return emoji.demojize(s, delimiters=(" ", " "), language='it')
 
 
-def remove_mentions(s: str, mention_tok="<MEN>"):
+def remove_mentions(s: str, mention_tok=MENTION_TOKEN):
     """
+    Removes the mentions from a tweet and replaces them with a token.
 
-    :param mention_tok:
-    :param mention_sub:
-    :param s:
-    :return:
+    :param s: string to clean.
+    :param mention_tok: token to replace the mentions with
+    :return: string in which the mentions have been replaced by a token.
     """
     s = re.sub(r"(\[@*\w+\])", mention_tok, s)
     return re.sub(r"(@\w+)", mention_tok, s)

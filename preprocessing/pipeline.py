@@ -44,8 +44,8 @@ def replace_emoji(df, col_name='text'):
     return df
 
 
-def delete_digits(df, col_name='text'):
-    df[col_name] = df[col_name].apply(tweetutils.remove_digits)
+def delete_numbers(df, col_name='text'):
+    df[col_name] = df[col_name].apply(tweetutils.remove_numbers)
     return df
 
 
@@ -62,6 +62,13 @@ def remove_hashtags(df, col_name='text'):
 
 
 def handle_mentions(df, col_name='text'):
+    """
+    Handles the mentions in the tweets by replacing them with a token.
+
+    :param df: dataframe containing the tweets.
+    :param col_name: name of the column to remove the mentions from.
+    :return: a dataframe with the mentions replaced with a token in the column col_name.
+    """
     df[col_name] = df[col_name].apply(tweetutils.remove_mentions)
     return df
 
@@ -75,7 +82,7 @@ class ItalianTweetsPreprocessingPipeline:
         :param transformations: list of functions contained in the pipeline.
                                 If None the default transformations applied are:
                                 remove_urls, handle_mentions, extract_hashtags, remove_hashtags,
-                                replace_emoji, delete_digits, lowercase
+                                replace_emoji, delete_numbers, lowercase
         """
         if transformations is None:
             transformations = [
@@ -84,7 +91,7 @@ class ItalianTweetsPreprocessingPipeline:
                 extract_hashtags,
                 remove_hashtags,
                 replace_emoji,
-                delete_digits,
+                delete_numbers,
                 lowercase
             ]
         self.transformations = transformations
