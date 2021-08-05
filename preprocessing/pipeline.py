@@ -35,6 +35,20 @@ def lowercase(df, col_name='text'):
     return df
 
 
+def replace_emoji(df, col_name='text'):
+    def handle_emoji(s):
+        new_str = tweetutils.substitute_emoji(s)
+        return new_str.replace("_", " ")
+
+    df[col_name] = df[col_name].apply(handle_emoji)
+    return df
+
+
+def delete_digits(df, col_name='text'):
+    df[col_name] = df[col_name].apply(tweetutils.remove_digits)
+    return df
+
+
 def remove_hashtags(df, col_name='text'):
     """
     Removes the hashtag symbol from a column.
@@ -47,6 +61,11 @@ def remove_hashtags(df, col_name='text'):
     return df
 
 
+def handle_mentions(df, col_name='text'):
+    df[col_name] = df[col_name].apply(tweetutils.remove_mentions)
+    return df
+
+
 class ItalianTweetsPreprocessingPipeline:
 
     def __init__(self, transformations=None):
@@ -55,13 +74,17 @@ class ItalianTweetsPreprocessingPipeline:
 
         :param transformations: list of functions contained in the pipeline.
                                 If None the default transformations applied are:
-                                remove_urls, extract_hashtags, remove_hashtags, lowercase
+                                remove_urls, handle_mentions, extract_hashtags, remove_hashtags,
+                                replace_emoji, delete_digits, lowercase
         """
         if transformations is None:
             transformations = [
                 remove_urls,
+                handle_mentions,
                 extract_hashtags,
                 remove_hashtags,
+                replace_emoji,
+                delete_digits,
                 lowercase
             ]
         self.transformations = transformations
@@ -81,5 +104,3 @@ class ItalianTweetsPreprocessingPipeline:
         :return: None
         """
         self.transformations.append(transf)
-
-
