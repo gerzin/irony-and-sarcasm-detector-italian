@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pandas as pd
+from config import Config
 
 
 def tokenize_frame(tweets):
@@ -15,7 +16,7 @@ def tokenize_frame(tweets):
     tokenizer = Tokenizer(oov_token="<OOV>")
     tokenizer.fit_on_texts(tweets)
 
-    set_stopwords = stopwords.words('italian')
+    set_stopwords = stopwords.words(Config.TEXT_LANGUAGE)
 
     sentences_clear = []
     for sentence in tweets:
