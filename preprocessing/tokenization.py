@@ -5,8 +5,8 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import pandas as pd
 from config import Config
 
-OOV_TOKEN="<OOV>"
-TOKENIZER_NUM_WORDS=None
+OOV_TOKEN = "<OOV>"
+TOKENIZER_NUM_WORDS = None
 
 
 def tokenize_frame(tweets):
@@ -55,10 +55,7 @@ class ItalianTweetsTokenizer:
 
         stop_words_set = set(stopwords.words(Config.TEXT_LANGUAGE))
         tweets = df[col_name].tolist()
-        tokenized = [list(filter(lambda x: not x in stop_words_set), tweet) for tweet in tweets]
-
-
-
-
-
-
+        pre_tok = [list(filter(lambda x: x not in stop_words_set, tweet.split(" "))) for tweet in tweets]
+        sequences = self.tokenizer.texts_to_sequences(pre_tok)
+        sequences = pad_sequences(sequences, padding='post')
+        return sequences
