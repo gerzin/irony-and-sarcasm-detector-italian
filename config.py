@@ -12,5 +12,6 @@ class Config:
 
 
 if __name__ == '__main__':
-    print(f"{Config.TRAINING_DATASET_PATH=}".replace("Config.", ""))
-    print(f"{Config.TEXT_LANGUAGE=}".replace("Config.", ""))
+    print("Config:")
+    print(f"\t{Config.TRAINING_DATASET_PATH=}".replace("Config.", ""))
+    print(f"\t{Config.TEXT_LANGUAGE=}".replace("Config.", ""))
