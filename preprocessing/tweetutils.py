@@ -62,3 +62,7 @@ def remove_mentions(s: str, mention_tok=MENTION_TOKEN):
     """
     s = re.sub(r"(\[@*\w+\])", mention_tok, s)
     return re.sub(r"(@\w+)", mention_tok, s)
+
+# TODO: treat things like !!!gooooooal!!!
+def apostrophe_substitution(s: str):
+    pass
