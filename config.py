@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from models.modelsconfig import ModelsConfig
 
 class Config:
     """
@@ -13,6 +13,7 @@ class Config:
     TEST_DATASET_PATH = Path(__file__).parent / "datasets" / "test_gold_ironita2018.csv"
     TEXT_LANGUAGE = "italian"
     SEQUENCE_LENGTH = 50
+    MODELS_CONFIG = ModelsConfig
 
 
 
