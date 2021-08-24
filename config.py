@@ -1,6 +1,7 @@
 from pathlib import Path
 from models.modelsconfig import ModelsConfig
 
+
 class Config:
     """
     Static class containing the following configuration parameters:
@@ -14,7 +15,6 @@ class Config:
     TEXT_LANGUAGE = "italian"
     SEQUENCE_LENGTH = 50
     MODELS_CONFIG = ModelsConfig
-
 
 
 if __name__ == '__main__':
