@@ -113,3 +113,19 @@ class ItalianTweetsPreprocessingPipeline:
         :return: None
         """
         self.transformations.append(transf)
+
+    @staticmethod
+    def preprocess_string(s: str, to_lowercase=True):
+        """
+        Applies the default transformations to a single string.
+        :param to_lowercase: if True apply the lowercase transformation (default=True).
+        :param s: string to preprocess
+        :return: the preprocessed string
+        """
+        s = tweetutils.remove_urls(s)
+        s = tweetutils.remove_mentions(s)
+        # remove hashtags
+        s = s.replace("#", "")
+        s = tweetutils.substitute_emoji(s).replace("_", " ")
+        s = tweetutils.remove_numbers(s)
+        return s.lower() if to_lowercase else s
