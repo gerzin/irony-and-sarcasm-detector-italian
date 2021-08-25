@@ -136,3 +136,4 @@ weights/
 
 # same for the extracted weights in the pretrained module
 models/pretrained/
+/models/pretrained/bert-base-italian-xxl-cased/
