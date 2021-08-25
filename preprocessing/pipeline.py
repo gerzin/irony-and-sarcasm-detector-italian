@@ -75,14 +75,15 @@ def handle_mentions(df, col_name='text'):
 
 class ItalianTweetsPreprocessingPipeline:
 
-    def __init__(self, transformations=None):
+    def __init__(self, transformations=None, to_lowercase=True):
         """
         Pipeline to preprocess the dataset.
 
         :param transformations: list of functions contained in the pipeline.
                                 If None the default transformations applied are:
                                 remove_urls, handle_mentions, extract_hashtags, remove_hashtags,
-                                replace_emoji, delete_numbers, lowercase
+                                replace_emoji, delete_numbers, lowercase.
+        :param to_lowercase:    if True apply the lowercase transformation.
         """
         if transformations is None:
             transformations = [
@@ -92,8 +93,9 @@ class ItalianTweetsPreprocessingPipeline:
                 remove_hashtags,
                 replace_emoji,
                 delete_numbers,
-                lowercase
             ]
+            if to_lowercase:
+                transformations.append(lowercase)
         self.transformations = transformations
 
     def apply(self, df):
@@ -111,3 +113,19 @@ class ItalianTweetsPreprocessingPipeline:
         :return: None
         """
         self.transformations.append(transf)
+
+    @staticmethod
+    def preprocess_string(s: str, to_lowercase=True):
+        """
+        Applies the default transformations to a single string.
+        :param to_lowercase: if True apply the lowercase transformation (default=True).
+        :param s: string to preprocess
+        :return: the preprocessed string
+        """
+        s = tweetutils.remove_urls(s)
+        s = tweetutils.remove_mentions(s)
+        # remove hashtags
+        s = s.replace("#", "")
+        s = tweetutils.substitute_emoji(s).replace("_", " ")
+        s = tweetutils.remove_numbers(s)
+        return s.lower() if to_lowercase else s
