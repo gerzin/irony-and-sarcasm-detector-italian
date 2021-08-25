@@ -4,6 +4,39 @@
 # Downloads and extracts the tensorflow weights for the BERT_XXL_CASED model.
 #
 
+display_help() {
+    echo "Usage: $0" >&2
+    echo
+    echo "Downloads the BERT-XXL-CASED italian weights and extracts them in models.pretrained"
+    echo "Options:"
+    echo "   -h, --help           print this help message"
+    echo
+    # echo some stuff here for the -a or --add-options
+}
+
+
+while :
+do
+    case "$1" in
+      -h | --help)
+          display_help  # Call your function
+          exit 0
+          ;;
+      --) # End of all options
+          shift
+          break
+          ;;
+      -*)
+          echo "Error: Unknown option: $1" >&2
+          display_help
+          exit 1
+          ;;
+      *)  # No more options
+          break
+          ;;
+    esac
+done
+
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 PRETRAINED_MODELS_PATH="$SCRIPTPATH/../models/pretrained"
 
