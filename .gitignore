@@ -133,3 +133,6 @@ dmypy.json
 
 # the weights are too heavy for github, use the script to download them
 weights/
+
+# same for the extracted weights in the pretrained module
+models/pretrained/
