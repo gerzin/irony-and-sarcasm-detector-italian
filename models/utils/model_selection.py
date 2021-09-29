@@ -9,8 +9,6 @@ def train_test_validation_split(df, train_split=0.8, seed=42):
 
     :param df: Dataframe with features in column 'text' and labels in columns 'irony', 'sarcasm'.
     :param train_split: size of the train set.
-    :param val_split: size of the validation set.
-    :param test_split: size of the test set.
     :param seed: seed for the rng.
     :return: (X_train, y_train), (X_test, y_test), (X_val, y_val)
     """
