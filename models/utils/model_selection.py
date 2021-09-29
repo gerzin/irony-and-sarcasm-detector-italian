@@ -16,6 +16,6 @@ def train_test_validation_split(df, train_split=0.8, seed=42):
     features = df['text']
     targets = df[['irony', 'sarcasm']]
 
-    X_train, X, y_train, y = train_test_split(features, targets, train_size=train_split, random_state=seed)
+    X_train, X, y_train, y = train_test_split(features.to_numpy(), targets.to_numpy(), train_size=train_split, random_state=seed)
     X_test, X_val, y_test, y_val = train_test_split(X, y, train_size=0.5, random_state=seed)
     return (X_train, y_train), (X_test, y_test), (X_val, y_val)
