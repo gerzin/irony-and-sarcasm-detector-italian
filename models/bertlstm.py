@@ -1,4 +1,4 @@
-from modelsconfig import ModelsConfig
+from models.modelsconfig import ModelsConfig
 from transformers import TFBertModel, AutoTokenizer
 import numpy as np
 import tensorflow as tf
