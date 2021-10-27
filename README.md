@@ -19,12 +19,16 @@ The detailed description can be found here:
 Among all the models we developed, the one producing the best results
 has been the BERT-GRU model.
 
+The BERT model we used was a pretrained available on HuggingFace ([https://huggingface.co/dbmdz/bert-base-italian-xxl-cased](https://huggingface.co/dbmdz/bert-base-italian-xxl-cased)).
+
 ![BERTGRUMODEL](https://github.com/gerzin/IronySarcasmDetectorIT/blob/media/.media/bert_gru_placeholder.jpeg)
 
 ## Trained BERT-GRU model
 
 
-[Here](https://mega.nz/file/SaJlnIaR#ujK04KL6z_EKTVNS4K5SaSyhqkW1haKnKH0Xl53pbPQ) you can download the trained **BERT-GRU** model (≈ 500MB). 
+[Here](https://mega.nz/file/SaJlnIaR#ujK04KL6z_EKTVNS4K5SaSyhqkW1haKnKH0Xl53pbPQ) you can download the trained **BERT-GRU** model (≈ 500MB).
+Another 400MB will be downloaded by the get_bert_tokenizer which will downloaded a pretrained tokenizer
+from [HuggingFace.co](https://huggingface.co/)
 
 Here is an example of how to use it:
     
