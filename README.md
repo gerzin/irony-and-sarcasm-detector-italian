@@ -17,7 +17,7 @@ The detailed description can be found here:
 
 ## Model
 Among all the models we developed, the one producing the best results
-has been the BERT-GRU model.
+has been the BERT-GRU model (≈ 500MB).
 
 ![BERTGRUMODEL](https://github.com/gerzin/IronySarcasmDetectorIT/blob/media/.media/bert_gru_placeholder.jpeg)
 
