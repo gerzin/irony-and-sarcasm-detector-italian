@@ -9,6 +9,10 @@ EMBEDDING_SIZE = 128
 
 
 def get_bert_gru_classifier(hidden_layers, compile=True):
+    """
+    Returns the BERT GRU model.
+    params:
+    """
     model_url = ModelsConfig.BERT_ITA_XXL_CASED
     bert = TFBertModel.from_pretrained(model_url)
     input_ids_in = tf.keras.layers.Input(shape=(128,), name='input_token', dtype='int32')
