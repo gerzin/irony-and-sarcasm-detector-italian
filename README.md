@@ -17,14 +17,14 @@ The detailed description can be found here:
 
 ## Model
 Among all the models we developed, the one producing the best results
-has been the BERT-GRU model (≈ 500MB).
+has been the BERT-GRU model.
 
 ![BERTGRUMODEL](https://github.com/gerzin/IronySarcasmDetectorIT/blob/media/.media/bert_gru_placeholder.jpeg)
 
 ## Trained BERT-GRU model
 
 
-[Here](https://mega.nz/file/SaJlnIaR#ujK04KL6z_EKTVNS4K5SaSyhqkW1haKnKH0Xl53pbPQ) you can download the trained **BERT-GRU** model. 
+[Here](https://mega.nz/file/SaJlnIaR#ujK04KL6z_EKTVNS4K5SaSyhqkW1haKnKH0Xl53pbPQ) you can download the trained **BERT-GRU** model (≈ 500MB). 
 
 Here is an example of how to use it:
     
