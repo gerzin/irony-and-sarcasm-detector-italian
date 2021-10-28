@@ -16,10 +16,13 @@ The detailed description can be found here:
     }
 
 ## Model
+The framework used to develop the models is  tensorflow.
+![tensorflow](https://upload.wikimedia.org/wikipedia/commons/2/2d/Tensorflow_logo.svg)
+
 Among all the models we developed, the one producing the best results
 has been the BERT-GRU model.
 
-The BERT model we used was a pretrained available on HuggingFace ([https://huggingface.co/dbmdz/bert-base-italian-xxl-cased](https://huggingface.co/dbmdz/bert-base-italian-xxl-cased)).
+The BERT model we used was a pretrained one available on HuggingFace ([https://huggingface.co/dbmdz/bert-base-italian-xxl-cased](https://huggingface.co/dbmdz/bert-base-italian-xxl-cased)).
 
 ![BERTGRUMODEL](https://github.com/gerzin/IronySarcasmDetectorIT/blob/media/.media/bert_gru_placeholder.jpeg)
 
