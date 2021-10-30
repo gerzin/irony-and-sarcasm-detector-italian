@@ -14,6 +14,12 @@ import tensorflow as tf
 
 
 def f1(y_true, y_pred):
+    """
+    params:
+    y_true -
+    y_pred -
+    returns:
+    """
     y_pred = K.round(y_pred)
     tp = K.sum(K.cast(y_true * y_pred, 'float'), axis=0)
     tn = K.sum(K.cast((1 - y_true) * (1 - y_pred), 'float'), axis=0)
@@ -29,6 +35,12 @@ def f1(y_true, y_pred):
 
 
 def f1_score(y_true, y_pred):
+    """
+    params:
+    y_true -
+    y_pred -
+    returns:
+    """
     pairs = list(zip(y_true, y_pred))
     tp = pairs.count((1, 1))
     fp = pairs.count((0, 1))
@@ -41,6 +53,12 @@ def f1_score(y_true, y_pred):
 
 
 def f1_loss(y_true, y_pred):
+    """
+    params:
+    y_true -
+    y_pred -
+    returns:
+    """
     tp = K.sum(K.cast(y_true * y_pred, 'float'), axis=0)
     tn = K.sum(K.cast((1 - y_true) * (1 - y_pred), 'float'), axis=0)
     fp = K.sum(K.cast((1 - y_true) * y_pred, 'float'), axis=0)
@@ -55,6 +73,13 @@ def f1_loss(y_true, y_pred):
 
 
 def get_embedding_layer(experiment, word_index, embedding_matrix=None):
+    """
+    params:
+    experiment -
+    word_index -
+    embedding_matrix -
+    returns:
+    """
     if "embedding_file" in experiment:
         return Embedding(
             len(word_index) + 1,
@@ -70,6 +95,15 @@ def get_embedding_layer(experiment, word_index, embedding_matrix=None):
 
 
 def create_model(experiment, X_train, y_train, embedding_matrix=None, word_index=None):
+    """
+    params:
+    experiment -
+    X_train -
+    y_train -
+    embedding_matrix -
+    word_index -
+    returns:
+    """
     model = Sequential()
 
     if experiment["model"] in ["lstm", "cnn", "nn"]:
@@ -120,6 +154,13 @@ def create_model(experiment, X_train, y_train, embedding_matrix=None, word_index
 
 
 def train_model(model, X_train, y_train):
+    """
+    params:
+    model -
+    X_train -
+    y_train -
+    returns:
+    """
     callbacks = [EarlyStopping(monitor='val_loss', patience=2)]
     y_ints = [y.argmax() for y in y_train]
     class_weights = class_weight.compute_class_weight('balanced',
