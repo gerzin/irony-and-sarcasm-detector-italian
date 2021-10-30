@@ -12,6 +12,7 @@ def get_bert_gru_classifier(hidden_layers, compile=True):
     """
     Returns the BERT GRU model.
     params:
+    hidden_layers - list containing specification (number of neurons, return sequence, dropout) for each GRU hidden layer to add
     """
     model_url = ModelsConfig.BERT_ITA_XXL_CASED
     bert = TFBertModel.from_pretrained(model_url)
