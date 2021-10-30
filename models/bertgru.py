@@ -1,9 +1,8 @@
-from models.modelsconfig import ModelsConfig
 import tensorflow as tk
 from tensorflow import keras
 from config import Config
 from transformers import TFBertModel, AutoTokenizer
-
+from models.modelsconfig import ModelsConfig
 
 EMBEDDING_SIZE = 128
 
@@ -12,7 +11,9 @@ def get_bert_gru_classifier(hidden_layers, compile=True):
     """
     Returns the BERT GRU model.
     params:
-    hidden_layers - list containing specification (number of neurons, return sequence, dropout) for each GRU hidden layer to add
+    hidden_layers - list containing specification (number of neurons, return sequence, dropout)
+                    for each GRU hidden layer to add.
+    compile - flag indicating if to compile the model or not.
     """
     model_url = ModelsConfig.BERT_ITA_XXL_CASED
     bert = TFBertModel.from_pretrained(model_url)

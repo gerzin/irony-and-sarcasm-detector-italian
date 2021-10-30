@@ -9,6 +9,7 @@ def get_bert_lstm_classifier(params=[16, 32, 0.45], compile= True):
     Return the BERT LSTM model.
     params:
     params - list containing [lstm units, dense layer units, dropout]
+    compile - flag indicating if to compile the model or not.
     """
     model_url = ModelsConfig.BERT_ITA_XXL_CASED
     bert_config = BertConfig.from_pretrained(ModelsConfig.BERT_ITA_XXL_CASED, output_hidden_states=True)
