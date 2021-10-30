@@ -1,4 +1,4 @@
-import tensorflow as tk
+import tensorflow as tf
 from tensorflow import keras
 from config import Config
 from transformers import TFBertModel, AutoTokenizer

@@ -1,6 +1,6 @@
 from models.modelsconfig import ModelsConfig
 from transformers import AutoTokenizer
-
+import numpy as np
 
 def get_bert_tokenizer(model_url=ModelsConfig.BERT_ITA_XXL_CASED, tok_len=ModelsConfig.BERT_TOKENIZER_LENGTH):
     """Download the pretrained BERT tokenizer."""
