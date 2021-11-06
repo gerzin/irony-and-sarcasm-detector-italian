@@ -1,178 +1,302 @@
-from keras.models import Sequential
-from keras.optimizers import Adam
-from keras.layers import Activation, ActivityRegularization, Embedding, Dense, Bidirectional, Dropout, Flatten, LSTM, \
-    Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, GRU
-from keras.callbacks import EarlyStopping
-from keras.activations import relu
-from sklearn.utils import class_weight
+import sklearn
+import sklearn.metrics
 import numpy as np
-import keras.backend as K
-from keras_self_attention import SeqSelfAttention
-from keras import regularizers
-from keras.layers.normalization import BatchNormalization
-import tensorflow as tf
 
 
-def f1(y_true, y_pred):
+def computePrecision(tp, fp):
+    """
+    Return the precision score given true positive and false positive
+    """
+    if (tp + fp) != 0:
+        return tp / (tp + fp)
+    return 0
+
+
+def computeRecall(tp, fn):
+    """
+    Return the recall score given true positive and false negative
+    """
+    if (tp + fn) != 0:
+        return tp / (tp + fn)
+    return 0
+
+
+def computeF1(tp, fp, fn, tn):
+    """
+    Return the f1 score given the four components of confusion matrix
+    """
+    p = computePrecision(tp, fp)
+    r = computeRecall(tp, fn)
+    if (p + r) != 0:
+        return (2 * p * r) / (p + r)
+    return 0
+
+
+def computeAvgF1(confusion_matrix):
+    """
+    Return the average F1, intended as the mean between first and second class's f1 score
+    """
+    [tp, fp], [fn, tn] = confusion_matrix
+    f_pos = computeF1(tp, fp, fn, tn)
+    f_neg = computeF1(tn, fn, fp, tp)
+    return (f_pos + f_neg) / 2
+
+
+def computeAvgF1B(confusion_matrix):
+    """
+    Return the F1 score from the confusion matrix
+    """
+    [tp, fp], [fn, tn] = confusion_matrix
+    f_pos = computeF1(tp, fp, fn, tn)
+    return f_pos
+
+
+def model_test(model, x_test, y_test):
     """
     params:
-    y_true -
-    y_pred -
-    returns:
+    - model: the model to test
+    - x_test: input data
+    - y_test: target data
+    return:
+    - Average F1 of the prediction
     """
-    y_pred = K.round(y_pred)
-    tp = K.sum(K.cast(y_true * y_pred, 'float'), axis=0)
-    tn = K.sum(K.cast((1 - y_true) * (1 - y_pred), 'float'), axis=0)
-    fp = K.sum(K.cast((1 - y_true) * y_pred, 'float'), axis=0)
-    fn = K.sum(K.cast(y_true * (1 - y_pred), 'float'), axis=0)
+    y_pred = model.predict(x_test)
+    confusion_matrix = sklearn.metrics.confusion_matrix(y_test, np.rint(y_pred))
 
-    p = tp / (tp + fp + K.epsilon())
-    r = tp / (tp + fn + K.epsilon())
-
-    f1 = 2 * p * r / (p + r + K.epsilon())
-    f1 = tf.where(tf.is_nan(f1), tf.zeros_like(f1), f1)
-    return K.mean(f1)
+    return computeAvgF1(confusion_matrix)
 
 
-def f1_score(y_true, y_pred):
+def model_test_2out(model, x_test, y_test):
     """
     params:
-    y_true -
-    y_pred -
-    returns:
+    - model: the model to test
+    - x_test: input data
+    - y_test: target data
+    return:
+    - Average F1 of the prediction
     """
-    pairs = list(zip(y_true, y_pred))
-    tp = pairs.count((1, 1))
-    fp = pairs.count((0, 1))
-    fn = pairs.count((1, 0))
-
-    precision = float(tp) / float(tp + fp)
-    recall = float(tp) / float(tp + fn)
-    f1_score = 2 * (precision * recall) / (precision + recall)
-    return f1_score
-
-
-def f1_loss(y_true, y_pred):
-    """
-    params:
-    y_true -
-    y_pred -
-    returns:
-    """
-    tp = K.sum(K.cast(y_true * y_pred, 'float'), axis=0)
-    tn = K.sum(K.cast((1 - y_true) * (1 - y_pred), 'float'), axis=0)
-    fp = K.sum(K.cast((1 - y_true) * y_pred, 'float'), axis=0)
-    fn = K.sum(K.cast(y_true * (1 - y_pred), 'float'), axis=0)
-
-    p = tp / (tp + fp + K.epsilon())
-    r = tp / (tp + fn + K.epsilon())
-
-    f1 = 2 * p * r / (p + r + K.epsilon())
-    f1 = tf.where(tf.is_nan(f1), tf.zeros_like(f1), f1)
-    return 1 - K.mean(f1)
+    y_pred = model.predict(x_test)
+    y_pred_1, y_pred2 = zip(*y_pred)
+    y_test_1 = y_test['irony']
+    y_test2 = y_test['sarcasm']
+    confusion_matrix_1 = sklearn.metrics.confusion_matrix(y_test_1, np.rint(y_pred_1))
+    confusion_matrix_2 = sklearn.metrics.confusion_matrix(y_test2, np.rint(y_pred2))
+    AvgF1B = (computeAvgF1(confusion_matrix_1) * 2 + computeAvgF1B(confusion_matrix_2)) / 3
+    return computeAvgF1(confusion_matrix_1), AvgF1B
 
 
-def get_embedding_layer(experiment, word_index, embedding_matrix=None):
+def computePerformanceTaskB_2output(model, x_test, y_test, y_test_A):
     """
     params:
-    experiment -
-    word_index -
-    embedding_matrix -
-    returns:
+    - model: the model to test
+    - x_test: input data
+    - y_test: target data (irony, sarcasm)
+    - y_test_A: target data (irony)
+    return:
+    - F1 score reached in task A and task B
     """
-    if "embedding_file" in experiment:
-        return Embedding(
-            len(word_index) + 1,
-            experiment["embedding_dimension"],
-            weights=[embedding_matrix],
-            trainable=experiment["embedding_trainable"],
-            input_length=experiment["max_length"])
-    else:
-        return Embedding(
-            len(word_index) + 1,
-            experiment["embedding_dimension"],
-            input_shape=(experiment["max_length"],))
+    y_pred = model.predict(x_test)
+    y_pred_1, y_pred_2 = zip(*y_pred)
+    y_pred_1 = np.rint(y_pred_1)
+    y_pred_2 = np.rint(y_pred_2)
+    y_pred_round = list(zip(y_pred_1, y_pred_2))
+
+    f1_taskA = computeAvgF1(sklearn.metrics.confusion_matrix(y_test_A, y_pred_1))
+
+    y_test_1 = y_test['irony']
+    y_test_2 = y_test['sarcasm']
+    y_test_round = list(zip(y_test_1, y_test_2))
+    # f1 per classe (0,0)
+    y_pred_collapsed_1 = []
+    for e in y_pred_round:
+        if e == (0, 0):
+            y_pred_collapsed_1.append(1)
+        else:
+            y_pred_collapsed_1.append(0)
+    y_true_collapsed_1 = []
+    for e in y_test_round:
+        if e == (0, 0):
+            y_true_collapsed_1.append(1)
+        else:
+            y_true_collapsed_1.append(0)
+    tn_1, fp_1, fn_1, tp_1 = sklearn.metrics.confusion_matrix(y_true_collapsed_1, y_pred_collapsed_1).ravel()
+    F1_1 = computeF1(tp_1, fp_1, fn_1, tn_1)
+
+    # f1 per classe (1,0)
+    y_pred_collapsed_2 = []
+    for e in y_pred_round:
+        if e == (1, 0):
+            y_pred_collapsed_2.append(1)
+        else:
+            y_pred_collapsed_2.append(0)
+    y_true_collapsed_2 = []
+    for e in y_test_round:
+        if e == (1, 0):
+            y_true_collapsed_2.append(1)
+        else:
+            y_true_collapsed_2.append(0)
+    tn_2, fp_2, fn_2, tp_2 = sklearn.metrics.confusion_matrix(y_true_collapsed_2, y_pred_collapsed_2).ravel()
+    F1_2 = computeF1(tp_2, fp_2, fn_2, tn_2)
+
+    # f1 per classe (1,1)
+    y_pred_collapsed_3 = []
+    for e in y_pred_round:
+        if e == (1, 1):
+            y_pred_collapsed_3.append(1)
+        else:
+            y_pred_collapsed_3.append(0)
+    y_true_collapsed_3 = []
+    for e in y_test_round:
+        if e == (1, 1):
+            y_true_collapsed_3.append(1)
+        else:
+            y_true_collapsed_3.append(0)
+    tn_3, fp_3, fn_3, tp_3 = sklearn.metrics.confusion_matrix(y_true_collapsed_3, y_pred_collapsed_3).ravel()
+    F1_3 = computeF1(tp_3, fp_3, fn_3, tn_3)
+
+    return [f1_taskA, (F1_1 + F1_2 + F1_3) / 3]
 
 
-def create_model(experiment, X_train, y_train, embedding_matrix=None, word_index=None):
-    """
-    params:
-    experiment -
-    X_train -
-    y_train -
-    embedding_matrix -
-    word_index -
-    returns:
-    """
-    model = Sequential()
-
-    if experiment["model"] in ["lstm", "cnn", "nn"]:
-        model.add(get_embedding_layer(experiment, word_index, embedding_matrix=embedding_matrix))
-        model.add(Dropout(0.5))
-        model.add(BatchNormalization())
-        if 'attention' in experiment and experiment['attention']:
-            model.add(SeqSelfAttention(
-                attention_width=15,
-                attention_type=SeqSelfAttention.ATTENTION_TYPE_MUL,
-                attention_activation=None,
-                kernel_regularizer=regularizers.l2(1e-6),
-                use_attention_bias=False,
-                attention_regularizer_weight=1e-4,
-                name='Attention',
-            ))
-    if experiment["model"] == "mlp":
-        model.add(Dense(5000, input_shape=(X_train.shape[1],)))
-        model.add(Activation('relu'))
-        model.add(Dropout(0.5))
-        model.add(Dense(2500))
-        model.add(Activation('relu'))
-        model.add(Dropout(0.5))
-    elif experiment["model"] == "lstm":
-        model.add(Bidirectional(GRU(8)))
-        model.add(Dropout(0.5))
-    elif experiment["model"] == "cnn":
-        model.add(Conv1D(64, 8, activation='relu'))
-        model.add(MaxPooling1D(pool_size=4))
-        model.add(Flatten())
-        model.add(Dropout(0.5))
-    elif experiment["model"] == "nn":
-        model.add(Flatten())
-        model.add(Dense(1000))
-        model.add(Dropout(0.5))
-        model.add(Dense(500))
-        model.add(Dropout(0.5))
-    if 'regularization' in experiment and experiment['regularization']:
-        model.add(ActivityRegularization(l1=0.001, l2=0.0001))
-    model.add(Dense(y_train.shape[1], activation="softmax"))
-
-    # model.summary()
-    opt = Adam(lr=0.0001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
-    model.compile(loss="categorical_crossentropy",
-                  optimizer=opt,
-                  metrics=["accuracy"])
-    return model
-
-
-def train_model(model, X_train, y_train):
+def computePerformanceTaskB_2output_predicted(y_pred, y_test, y_test_A):
     """
     params:
-    model -
-    X_train -
-    y_train -
-    returns:
+    - y_pred: prediction of the model
+    - y_test: target data (irony, sarcasm)
+    - y_test_A: target data (irony)
+    return:
+    - F1 score reached in task A and task B
     """
-    callbacks = [EarlyStopping(monitor='val_loss', patience=2)]
-    y_ints = [y.argmax() for y in y_train]
-    class_weights = class_weight.compute_class_weight('balanced',
-                                                      np.unique(y_ints),
-                                                      y_ints)
-    history = model.fit(X_train, y_train,
-                        batch_size=32,
-                        epochs=10,
-                        shuffle=True,
-                        verbose=0,
-                        # callbacks=callbacks,
-                        # validation_split=0.1,
-                        class_weight=class_weights
-                        )
-    return model
+    y_pred_1, y_pred_2 = zip(*y_pred)
+    y_pred_1 = np.rint(y_pred_1)
+    y_pred_2 = np.rint(y_pred_2)
+    y_pred_round = list(zip(y_pred_1, y_pred_2))
+
+    f1_taskA = computeAvgF1(sklearn.metrics.confusion_matrix(y_test_A, y_pred_1))
+
+    y_test_1 = y_test['irony']
+    y_test_2 = y_test['sarcasm']
+    y_test_round = list(zip(y_test_1, y_test_2))
+    # f1 per classe (0,0)
+    y_pred_collapsed_1 = []
+    for e in y_pred_round:
+        if e == (0, 0):
+            y_pred_collapsed_1.append(1)
+        else:
+            y_pred_collapsed_1.append(0)
+    y_true_collapsed_1 = []
+    for e in y_test_round:
+        if e == (0, 0):
+            y_true_collapsed_1.append(1)
+        else:
+            y_true_collapsed_1.append(0)
+    tn_1, fp_1, fn_1, tp_1 = sklearn.metrics.confusion_matrix(y_true_collapsed_1, y_pred_collapsed_1).ravel()
+    F1_1 = computeF1(tp_1, fp_1, fn_1, tn_1)
+
+    # f1 per classe (1,0)
+    y_pred_collapsed_2 = []
+    for e in y_pred_round:
+        if e == (1, 0):
+            y_pred_collapsed_2.append(1)
+        else:
+            y_pred_collapsed_2.append(0)
+    y_true_collapsed_2 = []
+    for e in y_test_round:
+        if e == (1, 0):
+            y_true_collapsed_2.append(1)
+        else:
+            y_true_collapsed_2.append(0)
+    tn_2, fp_2, fn_2, tp_2 = sklearn.metrics.confusion_matrix(y_true_collapsed_2, y_pred_collapsed_2).ravel()
+    F1_2 = computeF1(tp_2, fp_2, fn_2, tn_2)
+
+    # f1 per classe (1,1)
+    y_pred_collapsed_3 = []
+    for e in y_pred_round:
+        if e == (1, 1):
+            y_pred_collapsed_3.append(1)
+        else:
+            y_pred_collapsed_3.append(0)
+    y_true_collapsed_3 = []
+    for e in y_test_round:
+        if e == (1, 1):
+            y_true_collapsed_3.append(1)
+        else:
+            y_true_collapsed_3.append(0)
+    tn_3, fp_3, fn_3, tp_3 = sklearn.metrics.confusion_matrix(y_true_collapsed_3, y_pred_collapsed_3).ravel()
+    F1_3 = computeF1(tp_3, fp_3, fn_3, tn_3)
+
+    return [f1_taskA, (F1_1 + F1_2 + F1_3) / 3]
+
+
+def computePerformanceTaskB_2model(model1, model2, x_test, y_test):
+    """
+    params:
+    - model1: model trained on irony
+    - model2: model trained on sarcasm
+    - x_test: input data
+    - y_test: target data (irony, sarcasm)
+    return:
+    - F1 score reached in task A and task B
+    """
+    y_pred_1 = model1.predict(x_test)
+    y_pred_2 = model2.predict(x_test)
+    y_pred_1 = np.rint(y_pred_1)
+    y_pred_2 = np.rint(y_pred_2)
+    y_pred_round = list(zip(y_pred_1, y_pred_2))
+
+    y_test_1 = y_test['irony']
+    y_test_2 = y_test['sarcasm']
+    y_test_round = list(zip(y_test_1, y_test_2))
+    # f1 per classe (0,0)
+    y_pred_collapsed_1 = []
+    for e in y_pred_round:
+        if e == (0, 0):
+            y_pred_collapsed_1.append(1)
+        else:
+            y_pred_collapsed_1.append(0)
+    y_true_collapsed_1 = []
+    for e in y_test_round:
+        if e == (0, 0):
+            y_true_collapsed_1.append(1)
+        else:
+            y_true_collapsed_1.append(0)
+    tn_1, fp_1, fn_1, tp_1 = sklearn.metrics.confusion_matrix(y_true_collapsed_1, y_pred_collapsed_1).ravel()
+    F1_1 = computeF1(tp_1, fp_1, fn_1, tn_1)
+
+    # f1 per classe (1,0)
+    y_pred_collapsed_2 = []
+    for e in y_pred_round:
+        if e == (1, 0):
+            y_pred_collapsed_2.append(1)
+        else:
+            y_pred_collapsed_2.append(0)
+    y_true_collapsed_2 = []
+    for e in y_test_round:
+        if e == (1, 0):
+            y_true_collapsed_2.append(1)
+        else:
+            y_true_collapsed_2.append(0)
+    tn_2, fp_2, fn_2, tp_2 = sklearn.metrics.confusion_matrix(y_true_collapsed_2, y_pred_collapsed_2).ravel()
+    F1_2 = computeF1(tp_2, fp_2, fn_2, tn_2)
+
+    # f1 per classe (1,1)
+    y_pred_collapsed_3 = []
+    for e in y_pred_round:
+        if e == (1, 1):
+            y_pred_collapsed_3.append(1)
+        else:
+            y_pred_collapsed_3.append(0)
+    y_true_collapsed_3 = []
+    for e in y_test_round:
+        if e == (1, 1):
+            y_true_collapsed_3.append(1)
+        else:
+            y_true_collapsed_3.append(0)
+    tn_3, fp_3, fn_3, tp_3 = sklearn.metrics.confusion_matrix(y_true_collapsed_3, y_pred_collapsed_3).ravel()
+    F1_3 = computeF1(tp_3, fp_3, fn_3, tn_3)
+
+    return (F1_1 + F1_2 + F1_3) / 3
+
+
+def f1_taskA_2output(model, x, y):
+    y_pred = model.predict(x_test)
+    y_pred_1, y_pred_2 = zip(*y_pred)
