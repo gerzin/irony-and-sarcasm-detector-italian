@@ -1,6 +1,7 @@
 from pathlib import Path
 from models.modelsconfig import ModelsConfig
 
+
 class Config:
     """
     Static class containing the following configuration parameters:
@@ -33,7 +34,6 @@ if __name__ == '__main__':
     print(f"\t{Config.PREPROCESSED_DATASETS_PATH=}".replace("Config.", ""))
     print(f"\t{Config.TEXT_LANGUAGE=}".replace("Config.", ""))
     print(f"\t{Config.SEQUENCE_LENGTH=}".replace("Config.", ""))
-    print(f"\t{Config.MODELS_CONFIG=}".replace("Config.", ""))
     print(f"\t{Config.TRAINING_PREPROCESSED_PATH=}".replace("Config.", ""))
     print(f"\t{Config.TEST_PREPROCESSED_PATH=}".replace("Config.", ""))
     print(f"\t{Config.VALIDATION_PREPROCESSED_PATH=}".replace("Config.", ""))
