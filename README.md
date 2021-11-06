@@ -43,7 +43,11 @@ Here is an example of how to use it:
     
     pred = model.predict(tokenized_tweet)
     
-    
+### Code structure
+The main code is split across there three folders:
+* __preprocessing__ - contains utilities for text preprocessing implementing the pipeline through which the tweets will pass.
+* __models__ - contains the models implementations.
+* __notebooks__ - contains the Jupyter notebooks we used to develop and test the code. The notebooks containing the models' implementations are meant to be run on Colab.
 
 
 
