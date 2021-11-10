@@ -3,12 +3,12 @@ import numpy as np
 import tensorflow as tf
 
 
-def get_bert_lstm_classifier(params=[16, 32, 0.45], compile= True):
+def get_bert_lstm_classifier(params=[16, 32, 0.45], compile_model= True):
     """
     Return the BERT LSTM model.
     params:
     params - list containing [lstm units, dense layer units, dropout]
-    compile - flag indicating if to compile the model or not.
+    compile_model - flag indicating if to compile_model the model or not.
     """
     model_url = "dbmdz/bert-base-italian-xxl-cased"
     bert_config = BertConfig.from_pretrained(model_url, output_hidden_states=True)
@@ -38,7 +38,7 @@ def get_bert_lstm_classifier(params=[16, 32, 0.45], compile= True):
 
     opt = tf.keras.optimizers.Adam(learning_rate=2e-5, epsilon=1e-3)
 
-    if compile:
+    if compile_model:
         model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['acc'])
 
     return model

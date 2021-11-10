@@ -1,17 +1,20 @@
 import tensorflow as tf
-from tensorflow import keras
 from transformers import TFBertModel, AutoTokenizer
 
 EMBEDDING_SIZE = 128
 
 
-def get_bert_gru_classifier(hidden_layers, compile=True):
+def get_bert_gru_classifier(hidden_layers, compile_model=True):
     """
     Returns the BERT GRU model.
     params:
-    hidden_layers - list containing specification (number of neurons, return sequence, dropout)
+    hidden_layers - list containing specification in form of a tuple (number of neurons, return sequence, dropout)
                     for each GRU hidden layer to add.
-    compile - flag indicating if to compile the model or not.
+    compile_model - flag indicating if to compile_model the model or not.
+
+    example:
+
+        model = get_bert_gru_classifier([(l1_neurons, l1_retseq, l1_dropout),...,(ln_neurons, ln_retseq, ln_dropout)])
     """
     model_url = "dbmdz/bert-base-italian-xxl-cased"
     bert = TFBertModel.from_pretrained(model_url)
@@ -36,7 +39,7 @@ def get_bert_gru_classifier(hidden_layers, compile=True):
 
     for layer in model.layers[:3]:
         layer.trainable = False
-    if compile:
+    if compile_model:
         model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
     return model

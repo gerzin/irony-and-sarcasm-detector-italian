@@ -10,11 +10,15 @@ class ModelsConfig:
 
 
 if __name__ == '__main__':
+    def print_(x: str):
+        if type(x) is not str:
+            raise TypeError("this version of print only accepts strings")
+        print(x.replace("Config.", ""))
     print("ModelsConfig:")
-    print(f"\t{ModelsConfig.SEQUENCE_LENGTH=}".replace("ModelsConfig.", ""))
-    print(f"\t{ModelsConfig.BERT_ITA_XXL_CASED=}".replace("ModelsConfig.", ""))
-    print(f"\t{ModelsConfig.BERT_TOKENIZER_LENGTH=}".replace("ModelsConfig.", ""))
-    print(f"\t{ModelsConfig.BERT_CHECKPOINT_DIR=}".replace("ModelsConfig.", ""))
-    print(f"\t{ModelsConfig.BERT_MODEL_NAME=}".replace("ModelsConfig.", ""))
+    print_(f"\t{ModelsConfig.SEQUENCE_LENGTH=}")
+    print_(f"\t{ModelsConfig.BERT_ITA_XXL_CASED=}")
+    print_(f"\t{ModelsConfig.BERT_TOKENIZER_LENGTH=}")
+    print_(f"\t{ModelsConfig.BERT_CHECKPOINT_DIR=}")
+    print_(f"\t{ModelsConfig.BERT_MODEL_NAME=}")
 
 

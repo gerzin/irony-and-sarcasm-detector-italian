@@ -28,13 +28,19 @@ class Config:
 
 
 if __name__ == '__main__':
+    def print_(x: str):
+        if type(x) is not str:
+            raise TypeError("this version of print only accepts strings")
+        print(x.replace("Config.", ""))
+
+
     print("Config:")
-    print(f"\t{Config.TRAINING_DATASET_PATH=}".replace("Config.", ""))
-    print(f"\t{Config.TEST_DATASET_PATH=}".replace("Config.", ""))
-    print(f"\t{Config.PREPROCESSED_DATASETS_PATH=}".replace("Config.", ""))
-    print(f"\t{Config.TEXT_LANGUAGE=}".replace("Config.", ""))
-    print(f"\t{Config.SEQUENCE_LENGTH=}".replace("Config.", ""))
-    print(f"\t{Config.TRAINING_PREPROCESSED_PATH=}".replace("Config.", ""))
-    print(f"\t{Config.TEST_PREPROCESSED_PATH=}".replace("Config.", ""))
-    print(f"\t{Config.VALIDATION_PREPROCESSED_PATH=}".replace("Config.", ""))
-    print(f"\t{Config.TRAIN_SIZE=}".replace("Config.", ""))
+    print_(f"\t{Config.TRAINING_DATASET_PATH=}")
+    print_(f"\t{Config.TEST_DATASET_PATH=}")
+    print_(f"\t{Config.PREPROCESSED_DATASETS_PATH=}")
+    print_(f"\t{Config.TEXT_LANGUAGE=}")
+    print_(f"\t{Config.SEQUENCE_LENGTH=}")
+    print_(f"\t{Config.TRAINING_PREPROCESSED_PATH=}")
+    print_(f"\t{Config.TEST_PREPROCESSED_PATH=}")
+    print_(f"\t{Config.VALIDATION_PREPROCESSED_PATH=}")
+    print_(f"\t{Config.TRAIN_SIZE=}")
