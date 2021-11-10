@@ -1,8 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
-from config import Config
 from transformers import TFBertModel, AutoTokenizer
-from models.modelsconfig import ModelsConfig
 
 EMBEDDING_SIZE = 128
 
@@ -15,7 +13,7 @@ def get_bert_gru_classifier(hidden_layers, compile=True):
                     for each GRU hidden layer to add.
     compile - flag indicating if to compile the model or not.
     """
-    model_url = ModelsConfig.BERT_ITA_XXL_CASED
+    model_url = "dbmdz/bert-base-italian-xxl-cased"
     bert = TFBertModel.from_pretrained(model_url)
     input_ids_in = tf.keras.layers.Input(shape=(128,), name='input_token', dtype='int32')
     input_masks_in = tf.keras.layers.Input(shape=(128,), name='masked_token', dtype='int32')
