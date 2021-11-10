@@ -13,7 +13,6 @@ def get_bert_gru_classifier(hidden_layers, compile_model=True):
     compile_model - flag indicating if to compile_model the model or not.
 
     example:
-
         model = get_bert_gru_classifier([(l1_neurons, l1_retseq, l1_dropout),...,(ln_neurons, ln_retseq, ln_dropout)])
     """
     model_url = "dbmdz/bert-base-italian-xxl-cased"
