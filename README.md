@@ -24,7 +24,7 @@ has been the BERT-GRU model.
 
 The BERT model we used was a pretrained one available on HuggingFace ([https://huggingface.co/dbmdz/bert-base-italian-xxl-cased](https://huggingface.co/dbmdz/bert-base-italian-xxl-cased)).
 
-![BERTGRUMODEL](https://github.com/gerzin/IronySarcasmDetectorIT/blob/media/.media/bert_gru.jpg)
+![BERTGRUMODEL](https://github.com/gerzin/IronySarcasmDetectorIT/blob/media/.media/bert_gru2.jpg)
 
 ## Trained BERT-GRU model
 
