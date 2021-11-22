@@ -42,6 +42,49 @@ Here is an example of how to use it:
     tokenized_tweets = tokenize(tweets, tokenizer)[:-1]
     
     pred = model.predict(tokenized_tweet)
+
+## Challenge Results
+
+ * Task A
+
+| Name             	| F1 Avg    	|
+|------------------	|-----------	|
+| ItaliaNLP        	| 0.731     	|
+| ItaliaNLP        	| 0.713     	|
+| **Our Model**     	| **0.712** 	|
+| UNIBA            	| 0.710     	|
+| UNIBA            	| 0.710     	|
+| X2Check          	| 0.704     	|
+| UNITOR           	| 0.700     	|
+| UNITOR           	| 0.700     	|
+| X2Check          	| 0.695     	|
+| Aspie96          	| 0.695     	|
+| X2Check          	| 0.693     	|
+| X2Check          	| 0.683     	|
+| UOIRO            	| 0.651     	|
+| UOIRO            	| 0.646     	|
+| UOIRO            	| 0.629     	|
+| UOIRO            	| 0.614     	|
+| `baseline-random` |    `0.505`    |
+| venses-itgetarun 	| 0.470     	|
+| venses-itgetarun 	| 0.420     	|
+| baseline-mfc     	| 0.33      	|
+
+* Task B
+
+| Name             	| F1 Avg 	|
+|------------------	|--------	|
+| **Our Model**    	| **0.536** |
+| UNITOR           	| 0.520  	|
+| UNITOR           	| 0.518  	|
+| ItaliaNLP        	| 0.516  	|
+| ItaliaNLP        	| 0.503  	|
+| Aspie96          	| 0.465  	|
+| `baseline-random` | `0.337`  	|
+| venses-itgetarun 	| 0.236  	|
+| baseline-mfc     	| 0.223  	|
+| venses-itgetarun 	| 0.199  	|
+
     
 ### Code structure
 The main code is split across there three folders:
