@@ -36,9 +36,15 @@ from [HuggingFace.co](https://huggingface.co/)
 Here is an example of how to use it:
     
     from models.bert_tokenizer import get_bert_tokenizer, tokenize
+    from preprocessing.pipeline import ItalianTweetsPreprocessingPipeline
+    
+    pp = ItalianTweetsPreprocessingPipeline()
+
     model = keras.models.load_model('path/to/trained/model/location')
     
     tokenizer = get_bert_tokenizer()
+    
+    tweets = pp.apply(pandas_frame_containing_tweets)
     tokenized_tweets = tokenize(tweets, tokenizer)[:-1]
     
     pred = model.predict(tokenized_tweet)
