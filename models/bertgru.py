@@ -39,6 +39,6 @@ def get_bert_gru_classifier(hidden_layers, compile_model=True):
     for layer in model.layers[:3]:
         layer.trainable = False
     if compile_model:
-        model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
+        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 
     return model
