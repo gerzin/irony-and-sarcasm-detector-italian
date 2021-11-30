@@ -17,7 +17,6 @@ The detailed description can be found here:
 
 ## Model
 The framework used to develop the models is  tensorflow.
-![tensorflow](https://upload.wikimedia.org/wikipedia/commons/2/2d/Tensorflow_logo.svg)
 
 Among all the models we developed, the one producing the best results
 has been the BERT-GRU model.
