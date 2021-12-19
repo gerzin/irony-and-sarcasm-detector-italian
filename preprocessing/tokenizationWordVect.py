@@ -20,11 +20,6 @@ def tokenize_frame(tweets, mode = "sostituisciTag"):
     """
     
     
-    '''
-    tokenizzazione e 
-    lunghezza massima per il padding
-    '''
-    
     PADDING_LEN = 65
     
     maxLen = 0
@@ -113,13 +108,4 @@ def tokenize_frame(tweets, mode = "sostituisciTag"):
                 s.append([0]*128)
 
 
-    
-    
-
-
-
-    # new_frame = pd.DataFrame()
-    # new_frame['Sequences'] = padded
-
-    # return new_frame
     return sentences_vectorized
