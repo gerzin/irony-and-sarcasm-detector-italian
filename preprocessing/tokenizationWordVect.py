@@ -9,8 +9,6 @@ from config import Config
 import sqlite3
 
 
-
-
 def tokenize_frame(tweets, mode = "sostituisciTag"):
     """
     Tokenize the tweets and return a frame of sequences.
@@ -46,11 +44,7 @@ def tokenize_frame(tweets, mode = "sostituisciTag"):
         sequences.append(seq)
         if len(seq) > maxLen:
             maxLen = len(seq)
-            
-       
-        
-
-    
+             
 
     set_stopwords = stopwords.words(Config.TEXT_LANGUAGE)
 
